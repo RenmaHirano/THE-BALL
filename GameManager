@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    //時間記録のあたり
+    float countTime = 0;
+
     public int StageNo;
 
     public bool isBallMoving;
@@ -16,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject Dark;
 
+    //重力調整のあたり
     Slider gravitySlider;
 
     public GameObject goButton;
@@ -40,7 +44,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        countTime += Time.deltaTime;
     }
 
     public void PushGoButton()
@@ -72,10 +76,19 @@ public class GameManager : MonoBehaviour
         Dark.SetActive(!Dark.activeSelf);
     }
 
+    //グラビティボタン
+    public void PushGravityButton()
+    {
+        ConstantForce2D cf= ball.GetComponent<ConstantForce2D>();
+        cf.enabled = !cf.enabled;
+    }
+
     public void StageClear()
     {
         audioSource.PlayOneShot(clearSE);
         clearText.SetActive(true);
+        Text t = GameObject.Find("CanvasUI").transform.Find("ClearText").GetComponent<Text>();
+        t.text = "CLEAR!\n"+countTime.ToString();
         retryButton.SetActive(false);
         if (PlayerPrefs.GetInt("CLEAR", 0) < StageNo)
         {
